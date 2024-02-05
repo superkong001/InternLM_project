@@ -34,6 +34,7 @@ class FundusDiagnosis(BaseAction):
         return cropped_image
     
     def __init__(self,
+                 model_path=None,
                  description: Optional[dict] = None,
                  parser: Type[BaseParser] = JsonParser,
                  enable: bool = True) -> None:
