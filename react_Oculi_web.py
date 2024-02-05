@@ -1,3 +1,4 @@
+import os
 from argparse import ArgumentParser
 
 from lagent.actions import ActionExecutor, ArxivSearch, IPythonInterpreter
