@@ -6,7 +6,7 @@ import cv2
 import onnxruntime as ort
 from lagent.schema import ActionReturn, ActionStatusCode
 from lagent.actions import BaseAction
-from utils.transform import resized_edge, center_crop
+from transform import resized_edge, center_crop
 from streamlit.logger import get_logger
 
 DEFAULT_DESCRIPTION = """一个眼底图像诊断的工具，
