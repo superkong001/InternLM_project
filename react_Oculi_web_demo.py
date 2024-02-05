@@ -216,6 +216,7 @@ def main():
         logger.info(agent_return.inner_steps)
         st.session_state['ui'].render_assistant(agent_return)
 
+MODEL_DIR = "./OpenLMLab/InternLM2-chat-7b"
 
 if __name__ == '__main__':
     root_dir = "tmp_dir"
