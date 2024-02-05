@@ -205,13 +205,6 @@ def main():
             user_input = '我上传了一个图像，路径为: {file_path}. {user_input}'.format(
                 file_path=file_path, user_input=user_input)
         agent_return = st.session_state['chatbot'].chat(user_input)
-        # if file_path is not None:
-        #     # {"image_path": "/root/GlauClsDRGrading/data/refuge/images/g0001.jpg"}
-        #     user_input = '{"image_path": "{file_path}"}'.format(
-        #         file_path=file_path)
-        #     agent_return = st.session_state['chatbot'].chat(user_input)
-        # else:
-        #     agent_return = None
         st.session_state['assistant'].append(copy.deepcopy(agent_return))
         logger.info(agent_return.inner_steps)
         st.session_state['ui'].render_assistant(agent_return)
