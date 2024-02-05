@@ -25,7 +25,7 @@ class FundusDiagnosis(BaseAction):
                  enable: bool = True,
                  disable_description: Optional[str] = None) -> None:
         # super().__init__(description, name, enable, disable_description)
-        super().__init__(description)
+        super().__init__(description = description, enable = enable)
 
         if model_path is not None:
             assert os.path.exists(model_path), f"model_path: {model_path} not exists"
