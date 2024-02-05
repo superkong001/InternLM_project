@@ -12,7 +12,7 @@ from modelscope import snapshot_download
 from lagent.llms.meta_template import INTERNLM2_META as META
 
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
-MODEL_DIR = "/home/xlab-app-center/.cache/Oculi-InternLM2"
+MODEL_DIR = "./OpenLMLab/Oculi-InternLM2"
 
 class SessionState:
 
