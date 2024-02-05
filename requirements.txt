@@ -7,6 +7,6 @@ transformers
 xtuner
 lmdeploy
 streamlit
-lagent
+lagent==0.1.3
 onnxruntime-gpu
 openxlab
