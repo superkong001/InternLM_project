@@ -11,6 +11,8 @@ from fundus_diagnosis import FundusDiagnosis
 from modelscope import snapshot_download
 from lagent.llms.meta_template import INTERNLM2_META as META
 
+# MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
+MODEL_DIR = "./telos/Oculi-InternLM2"
 class SessionState:
 
     def init_state(self):
@@ -89,14 +91,17 @@ class StreamlitUI:
             '上传文件', type=['png', 'jpg', 'jpeg'])
         return model_name, model, plugin_action, uploaded_file
 
+    @staticmethod
+    def load_mymodel():
+        return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
+    
     def init_model(self, option):
         """Initialize the model based on the selected option."""
         if option not in st.session_state['model_map']:
             # modify
-            st.session_state['model_map'][option] = HFTransformerCasualLM(
-                    '/root/ft-Oculi/merged_Oculi', meta_template=META)
+            st.session_state['model_map'][option] = self.load_mymodel()
         return st.session_state['model_map'][option]
-
+        
     def initialize_chatbot(self, model, plugin_action):
         """Initialize the chatbot with the given model and plugin actions."""
         return ReAct(
@@ -209,15 +214,13 @@ def main():
         logger.info(agent_return.inner_steps)
         st.session_state['ui'].render_assistant(agent_return)
 
-MODEL_DIR = "./OpenLMLab/InternLM2-chat-7b"
-
 if __name__ == '__main__':
     root_dir = "tmp_dir"
     os.makedirs(root_dir, exist_ok=True)
     if not os.path.exists(MODEL_DIR):
         from openxlab.model import download
 
-        download(model_repo='OpenLMLab/internlm2-chat-7b', output=MODEL_DIR)
+        download(model_repo='telos/Oculi-InternLM2', output=MODEL_DIR)
 
         print("解压后目录结果如下：")
         print(os.listdir(MODEL_DIR))
