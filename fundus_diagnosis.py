@@ -34,12 +34,10 @@ class FundusDiagnosis(BaseAction):
         return cropped_image
     
     def __init__(self,
-                 model_path=None,
-                 description: str = DEFAULT_DESCRIPTION,
-                 name: Optional[str] = None,
-                 enable: bool = True,
-                 disable_description: Optional[str] = None) -> None:
-        super().__init__(description, name, enable, disable_description)
+                 description: Optional[dict] = None,
+                 parser: Type[BaseParser] = JsonParser,
+                 enable: bool = True) -> None:
+        super().__init__(description, parser, enable)
 
         if model_path is not None:
             assert os.path.exists(model_path), f"model_path: {model_path} not exists"
