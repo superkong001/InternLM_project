@@ -99,8 +99,6 @@ def main():
         history.extend(agent_return.inner_steps)
 
 if __name__ == '__main__':
-    root_dir = "tmp_dir"
-    os.makedirs(root_dir, exist_ok=True)
     if not os.path.exists(MODEL_DIR):
         from openxlab.model import download
 
