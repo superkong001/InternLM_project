@@ -14,6 +14,7 @@ from lagent.schema import AgentStatusCode
 # from streamlit.logger import get_logger
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
 MODEL_DIR = "./telos/Oculi-InternLM2"
+MODEL_NAME = "Oculi-InternLM2"
 
 class SessionState:
 
@@ -113,12 +114,15 @@ class StreamlitUI:
         uploaded_file = st.sidebar.file_uploader('上传文件')
 
         return model_name, model, plugin_action, uploaded_file, model_ip
-
+    
     def init_model(self, option, ip=None):
         """Initialize the model based on the selected option."""
-        model_url = f'http://{ip}'
+        if ip is None:
+            model_url = MODEL_DIR
+        else:
+            model_url = f'http://{ip}'
         st.session_state['model_map'][option] = LMDeployClient(
-            model_name='internlm2-chat-20b',
+            model_name=MODEL_NAME,
             url=model_url,
             meta_template=META,
             top_p=0.8,
