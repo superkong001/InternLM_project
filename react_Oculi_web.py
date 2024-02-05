@@ -11,9 +11,8 @@ from fundus_diagnosis import FundusDiagnosis
 from modelscope import snapshot_download
 from lagent.llms.meta_template import INTERNLM2_META as META
 
-MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
-# MODEL_DIR = "./telos/Oculi-InternLM2"
-MODEL_NAME = "Oculi-InternLM2"
+# MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
+MODEL_DIR = "/home/xlab-app-center"
 
 class SessionState:
 
@@ -221,7 +220,7 @@ if __name__ == '__main__':
     os.makedirs(root_dir, exist_ok=True)
     if not os.path.exists(MODEL_DIR):
         from openxlab.model import download
-
+        
         download(model_repo='telos/Oculi-InternLM2', output=MODEL_DIR)
 
         print("解压后目录结果如下：")
