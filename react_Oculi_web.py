@@ -12,7 +12,8 @@ from lagent.llms.meta_template import INTERNLM2_META as META
 from lagent.schema import AgentStatusCode
 
 # from streamlit.logger import get_logger
-
+# MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
+MODEL_DIR = "./telos/Oculi-InternLM2"
 
 class SessionState:
 
