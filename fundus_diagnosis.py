@@ -7,10 +7,13 @@ import onnxruntime as ort
 from lagent.schema import ActionReturn, ActionStatusCode
 from lagent.actions import BaseAction
 from transform import resized_edge, center_crop
+from streamlit.logger import get_logger
 DEFAULT_DESCRIPTION = """一个眼底图像诊断的工具，
 可以诊断眼底图像中的病变类型，如青光眼、是否为糖尿病视网膜病变。
 输入为眼底图的图像路径，可以为本地地址，也可以为网络地址(链接)
 """
+logger = get_logger(__name__)
+
 
 class FundusDiagnosis(BaseAction):
     def resized_edge_opencv(image, target_size, edge='long'):
