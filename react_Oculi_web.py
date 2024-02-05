@@ -326,7 +326,17 @@ def main():
 
 
 if __name__ == '__main__':
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    root_dir = os.path.join(root_dir, 'tmp_dir')
+    root_dir = "tmp_dir"
     os.makedirs(root_dir, exist_ok=True)
+    if not os.path.exists(MODEL_DIR):
+        from openxlab.model import download
+
+        download(model_repo='telos/Oculi-InternLM2', output=MODEL_DIR)
+
+        print("解压后目录结果如下：")
+        print(os.listdir(MODEL_DIR))
+    
+    # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # root_dir = os.path.join(root_dir, 'tmp_dir')
+    # os.makedirs(root_dir, exist_ok=True)
     main()
