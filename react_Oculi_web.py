@@ -1,105 +1,224 @@
+import copy
 import os
-from argparse import ArgumentParser
 
-from lagent.actions import ActionExecutor, ArxivSearch, IPythonInterpreter
-from lagent.agents.internlm2_agent import INTERPRETER_CN, META_CN, PLUGIN_CN, Internlm2Agent, Internlm2Protocol
-from lagent.llms import HFTransformer
+import streamlit as st
+from streamlit.logger import get_logger
+from lagent.actions import ActionExecutor
+from lagent.agents.react import ReAct
+from lagent.llms.huggingface import HFTransformerCasualLM
+
+from fundus_diagnosis import FundusDiagnosis
+from modelscope import snapshot_download
 from lagent.llms.meta_template import INTERNLM2_META as META
-from lagent.schema import AgentStatusCode
 
-# from streamlit.logger import get_logger
-# MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
-MODEL_DIR = "./telos/Oculi-InternLM2"
+MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
+# MODEL_DIR = "./telos/Oculi-InternLM2"
 MODEL_NAME = "Oculi-InternLM2"
 
+class SessionState:
 
-def parse_args():
-    parser = ArgumentParser(description='chatbot')
-    parser.add_argument(
-        '--path',
-        type=str,
-        default=MODEL_DIR,
-        help='The path to the model')
-    args = parser.parse_args()
-    return args
+    def init_state(self):
+        """Initialize session state variables."""
+        st.session_state['assistant'] = []
+        st.session_state['user'] = []
+
+        # add
+        cache_dir = "glaucoma_cls_dr_grading"
+        model_path = os.path.join(cache_dir, "flyer123/GlauClsDRGrading", "model.onnx")
+        if not os.path.exists(model_path):
+            snapshot_download("flyer123/GlauClsDRGrading", cache_dir=cache_dir)
+        
+        #action_list = [PythonInterpreter(), GoogleSearch()]
+        action_list = [FundusDiagnosis(model_path=model_path)]
+        st.session_state['plugin_map'] = {
+            action.name: action
+            for action in action_list
+        }
+        st.session_state['model_map'] = {}
+        st.session_state['model_selected'] = None
+        st.session_state['plugin_actions'] = set()
+
+    def clear_state(self):
+        """Clear the existing session state."""
+        st.session_state['assistant'] = []
+        st.session_state['user'] = []
+        st.session_state['model_selected'] = None
+        if 'chatbot' in st.session_state:
+            st.session_state['chatbot']._session_history = []
+
+
+class StreamlitUI:
+
+    def __init__(self, session_state: SessionState):
+        self.init_streamlit()
+        self.session_state = session_state
+
+    def init_streamlit(self):
+        """Initialize Streamlit's UI settings."""
+        st.set_page_config(
+            layout='wide',
+            page_title='lagent-web',
+            page_icon='./docs/imgs/lagent_icon.png')
+        # st.header(':robot_face: :blue[Lagent] Web Demo ', divider='rainbow')
+        st.sidebar.title('模型控制')
+
+    def setup_sidebar(self):
+        """Setup the sidebar for model and plugin selection."""
+        model_name = st.sidebar.selectbox(
+            '模型选择：', options=['internlm2'])
+        if model_name != st.session_state['model_selected']:
+            model = self.init_model(model_name)
+            self.session_state.clear_state()
+            st.session_state['model_selected'] = model_name
+            if 'chatbot' in st.session_state:
+                del st.session_state['chatbot']
+        else:
+            model = st.session_state['model_map'][model_name]
+
+        plugin_name = st.sidebar.multiselect(
+            '插件选择',
+            options=list(st.session_state['plugin_map'].keys()),
+            default=[list(st.session_state['plugin_map'].keys())[0]],
+        )
+
+        plugin_action = [
+            st.session_state['plugin_map'][name] for name in plugin_name
+        ]
+        if 'chatbot' in st.session_state:
+            st.session_state['chatbot']._action_executor = ActionExecutor(
+                actions=plugin_action)
+        if st.sidebar.button('清空对话', key='clear'):
+            self.session_state.clear_state()
+        uploaded_file = st.sidebar.file_uploader(
+            '上传文件', type=['png', 'jpg', 'jpeg'])
+        return model_name, model, plugin_action, uploaded_file
+
+    @staticmethod
+    def load_mymodel():
+        return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
+    
+    def init_model(self, option):
+        """Initialize the model based on the selected option."""
+        if option not in st.session_state['model_map']:
+            # modify
+            st.session_state['model_map'][option] = self.load_mymodel()
+        return st.session_state['model_map'][option]
+        
+    def initialize_chatbot(self, model, plugin_action):
+        """Initialize the chatbot with the given model and plugin actions."""
+        return ReAct(
+            llm=model, action_executor=ActionExecutor(actions=plugin_action))
+
+    def render_user(self, prompt: str):
+        with st.chat_message('user'):
+            st.markdown(prompt)
+
+    def render_assistant(self, agent_return):
+        with st.chat_message('assistant'):
+            for action in agent_return.actions:
+                if (action):
+                    self.render_action(action)
+            st.markdown(agent_return.response)
+
+    def render_action(self, action):
+        with st.expander(action.type, expanded=True):
+            st.markdown(
+                "<p style='text-align: left;display:flex;'> <span style='font-size:14px;font-weight:600;width:70px;text-align-last: justify;'>插    件</span><span style='width:14px;text-align:left;display:block;'>:</span><span style='flex:1;'>"  # noqa E501
+                + action.type + '</span></p>',
+                unsafe_allow_html=True)
+            st.markdown(
+                "<p style='text-align: left;display:flex;'> <span style='font-size:14px;font-weight:600;width:70px;text-align-last: justify;'>思考步骤</span><span style='width:14px;text-align:left;display:block;'>:</span><span style='flex:1;'>"  # noqa E501
+                + action.thought + '</span></p>',
+                unsafe_allow_html=True)
+            if (isinstance(action.args, dict) and 'text' in action.args):
+                st.markdown(
+                    "<p style='text-align: left;display:flex;'><span style='font-size:14px;font-weight:600;width:70px;text-align-last: justify;'> 执行内容</span><span style='width:14px;text-align:left;display:block;'>:</span></p>",  # noqa E501
+                    unsafe_allow_html=True)
+                st.markdown(action.args['text'])
+            self.render_action_results(action)
+
+    def render_action_results(self, action):
+        """Render the results of action, including text, images, videos, and
+        audios."""
+        if (isinstance(action.result, dict)):
+            st.markdown(
+                "<p style='text-align: left;display:flex;'><span style='font-size:14px;font-weight:600;width:70px;text-align-last: justify;'> 执行结果</span><span style='width:14px;text-align:left;display:block;'>:</span></p>",  # noqa E501
+                unsafe_allow_html=True)
+            if 'text' in action.result:
+                st.markdown(
+                    "<p style='text-align: left;'>" + action.result['text'] +
+                    '</p>',
+                    unsafe_allow_html=True)
+            if 'image' in action.result:
+                image_path = action.result['image']
+                image_data = open(image_path, 'rb').read()
+                st.image(image_data, caption='Generated Image')
+            if 'video' in action.result:
+                video_data = action.result['video']
+                video_data = open(video_data, 'rb').read()
+                st.video(video_data)
+            if 'audio' in action.result:
+                audio_data = action.result['audio']
+                audio_data = open(audio_data, 'rb').read()
+                st.audio(audio_data)
 
 
 def main():
-    args = parse_args()
-    # Initialize the HFTransformer-based Language Model (llm)
-    model = HFTransformer(
-        path=args.path,
-        meta_template=META,
-        top_p=0.8,
-        top_k=None,
-        temperature=0.1,
-        repetition_penalty=1.0,
-        stop_words=['<|im_end|>'])
-    plugin_executor = ActionExecutor(actions=[ArxivSearch()])  # noqa: F841
-    interpreter_executor = ActionExecutor(actions=[IPythonInterpreter()])
+    logger = get_logger(__name__)
+    # Initialize Streamlit UI and setup sidebar
+    if 'ui' not in st.session_state:
+        session_state = SessionState()
+        session_state.init_state()
+        st.session_state['ui'] = StreamlitUI(session_state)
 
-    chatbot = Internlm2Agent(
-        llm=model,
-        plugin_executor=None,
-        interpreter_executor=interpreter_executor,
-        protocol=Internlm2Protocol(
-            meta_prompt=META_CN,
-            interpreter_prompt=INTERPRETER_CN,
-            plugin_prompt=PLUGIN_CN,
-            tool=dict(
-                begin='{start_token}{name}\n',
-                start_token='<|action_start|>',
-                name_map=dict(
-                    plugin='<|plugin|>', interpreter='<|interpreter|>'),
-                belong='assistant',
-                end='<|action_end|>\n',
-            ),
-        ),
-    )
+    else:
+        st.set_page_config(
+            layout='wide',
+            page_title='lagent-web',
+            page_icon='./docs/imgs/lagent_icon.png')
+        # st.header(':robot_face: :blue[Lagent] Web Demo ', divider='rainbow')
+    model_name, model, plugin_action, uploaded_file = st.session_state[
+        'ui'].setup_sidebar()
 
-    def input_prompt():
-        print('\ndouble enter to end input >>> ', end='', flush=True)
-        sentinel = ''  # ends when this string is seen
-        return '\n'.join(iter(input, sentinel))
+    # Initialize chatbot if it is not already initialized
+    # or if the model has changed
+    if 'chatbot' not in st.session_state or model != st.session_state[
+            'chatbot']._llm:
+        st.session_state['chatbot'] = st.session_state[
+            'ui'].initialize_chatbot(model, plugin_action)
 
-    history = []
-    while True:
-        try:
-            prompt = input_prompt()
-        except UnicodeDecodeError:
-            print('UnicodeDecodeError')
-            continue
-        if prompt == 'exit':
-            exit(0)
-        history.append(dict(role='user', content=prompt))
-        print('\nInternLm2：', end='')
-        current_length = 0
-        last_status = None
-        for agent_return in chatbot.stream_chat(history, max_new_tokens=512):
-            status = agent_return.state
-            if status not in [
-                    AgentStatusCode.STREAM_ING, AgentStatusCode.CODING,
-                    AgentStatusCode.PLUGIN_START
-            ]:
-                continue
-            if status != last_status:
-                current_length = 0
-                print('')
-            if isinstance(agent_return.response, dict):
-                action = f"\n\n {agent_return.response['name']}: \n\n"
-                action_input = agent_return.response['parameters']
-                if agent_return.response['name'] == 'IPythonInterpreter':
-                    action_input = action_input['command']
-                response = action + action_input
-            else:
-                response = agent_return.response
-            print(response[current_length:], end='', flush=True)
-            current_length = len(response)
-            last_status = status
-        print('')
-        history.extend(agent_return.inner_steps)
+    for prompt, agent_return in zip(st.session_state['user'],
+                                    st.session_state['assistant']):
+        st.session_state['ui'].render_user(prompt)
+        st.session_state['ui'].render_assistant(agent_return)
+    # User input form at the bottom (this part will be at the bottom)
+    # with st.form(key='my_form', clear_on_submit=True):
+
+    if user_input := st.chat_input(''):
+        st.session_state['ui'].render_user(user_input)
+        st.session_state['user'].append(user_input)
+        # Add file uploader to sidebar
+        if uploaded_file:
+            file_bytes = uploaded_file.read()
+            file_type = uploaded_file.type
+            if 'image' in file_type:
+                st.image(file_bytes, caption='Uploaded Image')
+            
+            # Save the file to a temporary location and get the path
+            file_path = os.path.join(root_dir, uploaded_file.name)
+            with open(file_path, 'wb') as tmpfile:
+                tmpfile.write(file_bytes)
+            st.write(f'File saved at: {file_path}')
+            user_input = '我上传了一个图像，路径为: {file_path}. {user_input}'.format(
+                file_path=file_path, user_input=user_input)
+        agent_return = st.session_state['chatbot'].chat(user_input)
+        st.session_state['assistant'].append(copy.deepcopy(agent_return))
+        logger.info(agent_return.inner_steps)
+        st.session_state['ui'].render_assistant(agent_return)
 
 if __name__ == '__main__':
+    root_dir = "tmp_dir"
+    os.makedirs(root_dir, exist_ok=True)
     if not os.path.exists(MODEL_DIR):
         from openxlab.model import download
 
@@ -107,5 +226,8 @@ if __name__ == '__main__':
 
         print("解压后目录结果如下：")
         print(os.listdir(MODEL_DIR))
-    
+
+    # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # root_dir = os.path.join(root_dir, 'tmp_dir')
+    # os.makedirs(root_dir, exist_ok=True)
     main()
