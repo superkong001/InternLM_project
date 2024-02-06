@@ -20,12 +20,19 @@ logger = get_logger(__name__)
 class FundusDiagnosis(BaseAction):
     def __init__(self,
                  model_path=None,
-                 description: str = DEFAULT_DESCRIPTION,
-                 name: Optional[str] = None,
-                 enable: bool = True,
-                 disable_description: Optional[str] = None) -> None:
-        super().__init__(description, name, enable, disable_description)
-
+                 answer_symbol: Optional[str] = None,
+                 answer_expr: Optional[str] = 'solution()',
+                 answer_from_stdout: bool = False,
+                 timeout: int = 20,
+                 description: Optional[dict] = None,
+                 parser: Type[BaseParser] = JsonParser,
+                 enable: bool = True) -> None:
+        super().__init__(description, parser, enable)
+        self.answer_symbol = answer_symbol
+        self.answer_expr = answer_expr
+        self.answer_from_stdout = answer_from_stdout
+        self.timeout = timeout
+        
         if model_path is not None:
             assert os.path.exists(model_path), f"model_path: {model_path} not exists"
             assert model_path[-5:] == ".onnx", f"model_path: {model_path} is not a onnx model"
@@ -33,6 +40,7 @@ class FundusDiagnosis(BaseAction):
             providers = ['CUDAExecutionProvider']
 
             self.model = ort.InferenceSession(model_path, providers=providers, )
+        
 
     def __call__(self, query: str) -> ActionReturn:
         """Return the image recognition response.
