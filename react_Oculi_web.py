@@ -111,7 +111,7 @@ class StreamlitUI:
     @staticmethod
     def load_mymodel():
         # return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
-        args = self.parse_args()
+        args = parse_args()
         return HFTransformer(
             path=args.path,
             meta_template=META,
