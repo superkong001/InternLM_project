@@ -92,9 +92,34 @@ class StreamlitUI:
             '上传文件', type=['png', 'jpg', 'jpeg'])
         return model_name, model, plugin_action, uploaded_file
 
+    def parse_args():
+        parser = ArgumentParser(description='chatbot')
+        parser.add_argument(
+            '--path',
+            type=str,
+            default='internlm/internlm2-chat-20b',
+            help='The path to the model')
+        parser.add_argument(
+            '--mode',
+            type=str,
+            default='chat',
+            help='Completion through chat or generate')
+        args = parser.parse_args()
+        return args
+    
     @staticmethod
     def load_mymodel():
-        return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
+        # return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
+        args = parse_args()
+        return HFTransformer(
+            path=args.path,
+            meta_template=META,
+            max_new_tokens=1024,
+            top_p=0.8,
+            top_k=None,
+            temperature=0.1,
+            repetition_penalty=1.0,
+            stop_words=['<|im_end|>'])
     
     def init_model(self, option):
         """Initialize the model based on the selected option."""
