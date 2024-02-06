@@ -13,6 +13,7 @@ from lagent.schema import AgentStatusCode
 
 # from streamlit.logger import get_logger
 
+from fundus_diagnosis import FundusDiagnosis
 
 class SessionState:
 
