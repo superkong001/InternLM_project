@@ -4,9 +4,12 @@ torch
 torchvision
 modelscope
 transformers
-xtuner[all]
-lmdeploy[all]
-streamlit
-lagent==0.1.3
+xtuner[all]==0.1.9
+lmdeploy[all]==v0.1.0
+streamlit==1.24.0
+lagent[all]==0.1.3
 onnxruntime-gpu
 openxlab
+packaging
+onnxruntime
+utils
