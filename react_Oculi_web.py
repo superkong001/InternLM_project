@@ -108,25 +108,21 @@ class StreamlitUI:
         args = parser.parse_args()
         return args
     
-    @staticmethod
-    def load_mymodel():
-        # return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
-        args = parse_args()
-        return HFTransformer(
-            path=args.path,
-            meta_template=META,
-            max_new_tokens=1024,
-            top_p=0.8,
-            top_k=None,
-            temperature=0.1,
-            repetition_penalty=1.0,
-            stop_words=['<|im_end|>'])
-    
     def init_model(self, option):
         """Initialize the model based on the selected option."""
         if option not in st.session_state['model_map']:
             # modify
-            st.session_state['model_map'][option] = self.load_mymodel()
+            args = self.parse_args()
+            # HFTransformerCasualLM(MODEL_DIR, meta_template=META)
+            st.session_state['model_map'][option] = HFTransformer(
+                path=args.path,
+                meta_template=META,
+                max_new_tokens=1024,
+                top_p=0.8,
+                top_k=None,
+                temperature=0.1,
+                repetition_penalty=1.0,
+                stop_words=['<|im_end|>'])
         return st.session_state['model_map'][option]
         
     def initialize_chatbot(self, model, plugin_action):
