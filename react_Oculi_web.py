@@ -91,7 +91,8 @@ class StreamlitUI:
         uploaded_file = st.sidebar.file_uploader(
             '上传文件', type=['png', 'jpg', 'jpeg'])
         return model_name, model, plugin_action, uploaded_file
-
+    
+    @staticmethod
     def parse_args():
         parser = ArgumentParser(description='chatbot')
         parser.add_argument(
@@ -110,7 +111,7 @@ class StreamlitUI:
     @staticmethod
     def load_mymodel():
         # return HFTransformerCasualLM(MODEL_DIR, meta_template=META)
-        args = parse_args()
+        args = self.parse_args()
         return HFTransformer(
             path=args.path,
             meta_template=META,
