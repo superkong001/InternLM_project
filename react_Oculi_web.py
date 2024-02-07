@@ -7,7 +7,6 @@ from lagent.actions import ActionExecutor
 from lagent.agents.react import ReAct
 from lagent.llms.huggingface import HFTransformerCasualLM
 
-from argparse import ArgumentParser
 from fundus_diagnosis import FundusDiagnosis
 from modelscope import snapshot_download
 from lagent.llms import HFTransformer
@@ -94,30 +93,13 @@ class StreamlitUI:
             '上传文件', type=['png', 'jpg', 'jpeg'])
         return model_name, model, plugin_action, uploaded_file
     
-    @staticmethod
-    def parse_args():
-        parser = ArgumentParser(description='chatbot')
-        parser.add_argument(
-            '--path',
-            type=str,
-            default='internlm/internlm2-chat-20b',
-            help='The path to the model')
-        parser.add_argument(
-            '--mode',
-            type=str,
-            default='chat',
-            help='Completion through chat or generate')
-        args = parser.parse_args()
-        return args
-    
     def init_model(self, option):
         """Initialize the model based on the selected option."""
         if option not in st.session_state['model_map']:
             # modify
-            args = self.parse_args()
             # HFTransformerCasualLM(MODEL_DIR, meta_template=META)
             st.session_state['model_map'][option] = HFTransformer(
-                path=args.path,
+                path=MODEL_DIR,
                 meta_template=META,
                 max_new_tokens=1024,
                 top_p=0.8,
