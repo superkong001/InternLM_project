@@ -7,6 +7,7 @@ from lagent.actions import ActionExecutor
 from lagent.agents.react import ReAct
 from lagent.llms.huggingface import HFTransformerCasualLM
 
+from argparse import ArgumentParser
 from fundus_diagnosis import FundusDiagnosis
 from modelscope import snapshot_download
 from lagent.llms.meta_template import INTERNLM2_META as META
