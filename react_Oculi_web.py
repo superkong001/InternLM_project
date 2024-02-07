@@ -10,6 +10,7 @@ from lagent.llms.huggingface import HFTransformerCasualLM
 from argparse import ArgumentParser
 from fundus_diagnosis import FundusDiagnosis
 from modelscope import snapshot_download
+from lagent.llms import HFTransformer
 from lagent.llms.meta_template import INTERNLM2_META as META
 
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
