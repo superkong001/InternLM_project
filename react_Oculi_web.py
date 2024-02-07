@@ -101,11 +101,11 @@ class StreamlitUI:
             st.session_state['model_map'][option] = HFTransformer(
                 path=MODEL_DIR,
                 meta_template=META,
-                max_new_tokens=1024,
-                top_p=0.8,
-                top_k=None,
-                temperature=0.1,
-                repetition_penalty=1.0,
+                # max_new_tokens=1024,
+                # top_p=0.8,
+                # top_k=None,
+                # temperature=0.1,
+                # repetition_penalty=1.0,
                 stop_words=['<|im_end|>'])
         return st.session_state['model_map'][option]
         
