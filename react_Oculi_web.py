@@ -14,7 +14,7 @@ from lagent.llms import HFTransformer
 from lagent.llms.meta_template import INTERNLM2_META as META
 
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
-MODEL_DIR = "./OpenLMLab/Oculi-InternLM2"
+MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache"
 
 class SessionState:
 
