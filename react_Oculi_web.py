@@ -227,7 +227,9 @@ if __name__ == '__main__':
     from openxlab.model import download
 
     if not os.path.exists(MODEL_DIR):
-        download(model_repo='telos/Oculi-InternLM2', output='/home/xlab-app-center')
+        download(model_repo='telos/Oculi-InternLM2', 
+                 model_name='Oculi-InternLM2',
+                 output='/home/xlab-app-center')
     
         print("解压后目录结果如下：")
         print(os.listdir('/home/xlab-app-center'))
