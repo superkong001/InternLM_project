@@ -65,7 +65,7 @@ class StreamlitUI:
     def setup_sidebar(self):
         """Setup the sidebar for model and plugin selection."""
         model_name = st.sidebar.selectbox(
-            '模型选择：', options=['internlm2'])
+            '模型选择：', options=['Oculi-InternLM2'])
         if model_name != st.session_state['model_selected']:
             model = self.init_model(model_name)
             self.session_state.clear_state()
@@ -98,7 +98,7 @@ class StreamlitUI:
         if option not in st.session_state['model_map']:
             # modify
             # HFTransformerCasualLM(MODEL_DIR, meta_template=META)
-            st.session_state['model_map'][option] = HFTransformer(
+            st.session_state['model_map'][option] = HFTransformerCasualLM(
                 path=MODEL_DIR,
                 meta_template=META,
                 # max_new_tokens=1024,
