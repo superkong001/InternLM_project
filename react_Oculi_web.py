@@ -14,7 +14,8 @@ from lagent.llms import HFTransformer
 from lagent.llms.meta_template import INTERNLM2_META as META
 
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
-MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache"
+# MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache"
+MODEL_DIR = "telos/Oculi-InternLM2"
 
 class SessionState:
 
@@ -229,15 +230,15 @@ def main():
 if __name__ == '__main__':
     # root_dir = "tmp_dir"
     # os.makedirs(root_dir, exist_ok=True)
-    from openxlab.model import download
+    # from openxlab.model import download
 
-    if not os.path.exists(MODEL_DIR):
-        download(model_repo='telos/Oculi-InternLM2', 
-                 model_name='Oculi-InternLM2',
-                 output='/home/xlab-app-center')
+    # if not os.path.exists(MODEL_DIR):
+    #     download(model_repo='telos/Oculi-InternLM2', 
+    #              model_name='Oculi-InternLM2',
+    #              output='/home/xlab-app-center')
     
-        print("解压后目录结果如下：")
-        print(os.listdir('/home/xlab-app-center'))
+        # print("解压后目录结果如下：")
+        # print(os.listdir('/home/xlab-app-center'))
 
     # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # root_dir = os.path.join(root_dir, 'tmp_dir')
