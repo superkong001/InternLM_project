@@ -98,12 +98,13 @@ class StreamlitUI:
     @staticmethod
     @st.cache_resource
     def load_model():
+        # model = AutoModelForCausalLM.from_pretrained(MODEL_DIR, meta_template=META)
         model = (
-            AutoModelForCausalLM.from_pretrained("MODEL_DIR", meta_template=META, trust_remote_code=True)
+            AutoModelForCausalLM.from_pretrained(MODEL_DIR, meta_template=META, trust_remote_code=True)
             .to(torch.bfloat16)
             .cuda()
         )
-        tokenizer = AutoTokenizer.from_pretrained("MODEL_DIR", meta_template=META, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, meta_template=META, trust_remote_code=True)
         return model, tokenizer
     
     def init_model(self, option):
