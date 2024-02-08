@@ -92,21 +92,25 @@ class StreamlitUI:
         uploaded_file = st.sidebar.file_uploader(
             '上传文件', type=['png', 'jpg', 'jpeg'])
         return model_name, model, plugin_action, uploaded_file
+
+    @staticmethod
+    @st.cache_resource
+    def load_model():
+        model = (
+            AutoModelForCausalLM.from_pretrained("MODEL_DIR", meta_template=META, trust_remote_code=True)
+            .to(torch.bfloat16)
+            .cuda()
+        )
+        tokenizer = AutoTokenizer.from_pretrained("MODEL_DIR", meta_template=META, trust_remote_code=True)
+        return model, tokenizer
     
     def init_model(self, option):
         """Initialize the model based on the selected option."""
         if option not in st.session_state['model_map']:
             # modify
             # HFTransformerCasualLM(MODEL_DIR, meta_template=META)
-            st.session_state['model_map'][option] = HFTransformerCasualLM(
-                path=MODEL_DIR,
-                meta_template=META,
-                # max_new_tokens=1024,
-                # top_p=0.8,
-                # top_k=None,
-                # temperature=0.1,
-                # repetition_penalty=1.0,
-                stop_words=['<|im_end|>'])
+            model, tokenizer = self.load_model()
+            st.session_state['model_map'][option] = model
         return st.session_state['model_map'][option]
         
     def initialize_chatbot(self, model, plugin_action):
