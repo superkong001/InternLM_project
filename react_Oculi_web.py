@@ -13,10 +13,11 @@ from modelscope import AutoModelForCausalLM, AutoTokenizer
 from lagent.llms import HFTransformer
 from lagent.llms.meta_template import INTERNLM2_META as META
 
+MODEL_REPO = 'telos/Oculi-InternLM2'
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
 # MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache"
 # MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache/model"
-MODEL_DIR = "/home/xlab-app-center/.cache/model"
+MODEL_DIR = "/home/xlab-app-center"
 
 class SessionState:
 
@@ -107,6 +108,22 @@ class StreamlitUI:
         )
         tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, meta_template=META, trust_remote_code=True)
         return model, tokenizer
+
+    @staticmethod
+    @st.cache_resource
+    def model_repo_openxlab(input = [])
+        import openxlab
+        from openxlab.model import inference
+        # 鉴权
+        Access_Key = 'xegxnz2vrgjxqwqzy4kv'
+        Secrete_Key = 'qjkgeq63ngmlorl1alxnxa5j5wezbwppryx98jdn'
+        openxlab.login(ak=Access_Key, sk=Secrete_Key)
+        
+        # 调用推理服务
+        model_repo = MODEL_REPO
+        results = inference(model_repo, input)
+        return results
+
     
     def init_model(self, option):
         """Initialize the model based on the selected option."""
@@ -236,7 +253,7 @@ if __name__ == '__main__':
     from openxlab.model import download
 
     # if not os.path.exists(MODEL_DIR):
-    download(model_repo='telos/Oculi-InternLM2', 
+    download(model_repo=MODEL_REPO, 
              model_name='Oculi-InternLM2',
              output='/home/xlab-app-center')
 
