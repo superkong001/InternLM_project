@@ -241,7 +241,7 @@ if __name__ == '__main__':
              output='/home/xlab-app-center')
 
     print("解压后目录结果如下：")
-    print(os.listdir(MODEL_DIR))
+    print(os.listdir('/home/xlab-app-center'))
 
     # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # root_dir = os.path.join(root_dir, 'tmp_dir')
