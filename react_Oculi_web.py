@@ -111,7 +111,7 @@ class StreamlitUI:
 
     @staticmethod
     @st.cache_resource
-    def model_repo_openxlab(input = [])
+    def model_repo_openxlab(input = []):
         import openxlab
         from openxlab.model import inference
         # 鉴权
