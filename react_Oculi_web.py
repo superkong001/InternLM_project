@@ -16,8 +16,8 @@ from lagent.llms.meta_template import INTERNLM2_META as META
 MODEL_REPO = 'telos/Oculi-InternLM2'
 # MODEL_DIR = "/root/ft-Oculi/merged_Oculi"
 # MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache"
-# MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache/model"
-MODEL_DIR = "/home/xlab-app-center"
+MODEL_DIR = "./OpenLMLab/Oculi-InternLM2/.cache/model"
+# MODEL_DIR = "/home/xlab-app-center"
 
 class SessionState:
 
@@ -259,6 +259,8 @@ if __name__ == '__main__':
 
     print("解压后目录结果如下：")
     print(os.listdir('/home/xlab-app-center'))
+    print("解压后model目录结果如下：")
+    print(os.listdir('/home/xlab-app-center/.cache/model'))
 
     # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # root_dir = os.path.join(root_dir, 'tmp_dir')
