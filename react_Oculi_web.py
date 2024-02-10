@@ -260,7 +260,7 @@ if __name__ == '__main__':
     print("解压后目录结果如下：")
     print(os.listdir('/home/xlab-app-center'))
     print("解压后model目录结果如下：")
-    print(os.listdir('/home/xlab-app-center/.cache/model'))
+    print(os.listdir('/home/xlab-app-center/.cache/modelscope'))
 
     # root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # root_dir = os.path.join(root_dir, 'tmp_dir')
