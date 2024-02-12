@@ -44,10 +44,10 @@ class SessionState:
         st.session_state['user'] = []
 
         cache_dir = "glaucoma_cls_dr_grading"
-        model_path = os.path.join(cache_dir, "flyer123/GlauClsDRGrading", "model.onnx")
+        model_path = os.path.join(cache_dir, "kong123/GlauClsDRGrading", "model.onnx")
         if not os.path.exists(model_path):
             from modelscope import snapshot_download
-            snapshot_download("flyer123/GlauClsDRGrading", cache_dir=cache_dir)
+            snapshot_download("kong123/GlauClsDRGrading", cache_dir=cache_dir)
 
         action_list = [FundusDiagnosis(model_path=model_path)]
         st.session_state['plugin_map'] = {
