@@ -104,7 +104,7 @@ Plato.json
 
 # 准备和修改配置文件
 
-``Bash
+```Bash
 # 列出所有内置配置
 xtuner list-cfg
 
@@ -116,11 +116,11 @@ xtuner copy-cfg internlm2_chat_7b_qlora_oasst1_e3 .
 cp internlm2_chat_7b_qlora_oasst1_e3_copy.py internlm2_chat_7b_qlora_solomon_e3_copy.py
 
 vim internlm2_chat_7b_qlora_solomon_e3_copy.py
-``
+```
 
 减号代表要删除的行，加号代表要增加的行。
 
-``Bash
+```Bash
 # 单个文件情况：
 # 修改import部分
 - from xtuner.dataset.map_fns import oasst1_map_fn, template_map_fn_factory
@@ -155,12 +155,14 @@ train_dataset = dict(
     remove_unused_columns=True,
     shuffle_before_pack=True,
     pack_to_max_length=pack_to_max_length)
-``
+```
 
 另外改：max_epochs=20，batch_size = 4, max_length = 1024
 
 # 微调
+```Bash
 
+```
 
 
 
