@@ -196,9 +196,12 @@ xtuner convert pth_to_hf internlm2_chat_7b_qlora_solomon_e3_copy.py /root/solomo
 
 ```Bash
 # xtuner chat ${NAME_OR_PATH_TO_LLM} --adapter {NAME_OR_PATH_TO_ADAPTER} [optional arguments]
+# 与 InternLM2-Chat-7B, hf_solomon(调用adapter_config.json) 对话：
 cd ~/solomon
 xtuner chat /root/solomon/internlm2-chat-7b --adapter /root/solomon/hf_solomon --prompt-template internlm2_chat
 ```
+
+<img width="642" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/2db708f2-8d16-4444-85a1-e4fcc3f8e406">
 
 ## 合并与测试
 
