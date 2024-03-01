@@ -254,8 +254,8 @@ vim web_solomon.py
 + tokenizer = AutoTokenizer.from_pretrained('/root/solomon/merged_solomon',
                                               trust_remote_code=True)
 # 修改239 行和 240 行
-+  user_avator = '/root/code/InternLM/assets/user.png'
-+  robot_avator = '/root/code/InternLM/assets/robot.png'
++ user_avator = '/root/code/InternLM/assets/user.png'
++ robot_avator = '/root/code/InternLM/assets/robot.png'
 
 pip install streamlit
 
