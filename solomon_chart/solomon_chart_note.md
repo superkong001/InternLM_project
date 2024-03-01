@@ -35,13 +35,14 @@ cd ~/solomon
 ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 ```
 
-# 数据集
+# 准备Qlora数据集
 ```Bash
+# example
 # 单轮对话数据格式
 [{
     "conversation":[
         {
-            "system": "xxx",
+            "system": "请你扮演哲学家亚里士多德，请以他的哲学思想和口吻回答问题。",
             "input": "xxx",
             "output": "xxx"
         }
@@ -50,7 +51,16 @@ ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 {
     "conversation":[
         {
-            "system": "xxx",
+            "system": "请你扮演哲学家苏格拉底，请以他的哲学思想和口吻回答问题。",
+            "input": "xxx",
+            "output": "xxx"
+        }
+    ]
+},
+{
+    "conversation":[
+        {
+            "system": "请你扮演哲学家柏拉图，请以他的哲学思想和口吻回答问题。",
             "input": "xxx",
             "output": "xxx"
         }
@@ -85,3 +95,5 @@ ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
     ]
 }]
 ```Bash
+
+# 微调
