@@ -1,5 +1,6 @@
+# QLora微调
 
-# 环境部署
+## 环境部署
 
 ```Bash
 conda create --name solomon_chart python=3.10 -y
@@ -35,7 +36,7 @@ mkdir ~/solomon && cd ~/solomon
 ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 ```
 
-# 准备Qlora数据集
+## 准备Qlora数据集
 
 ```Bash
 mkdir ~/solomon/data/dataset && cd ~/solomon/data/train_data
@@ -102,7 +103,7 @@ Plato.json
 }]
 ```
 
-# 准备和修改配置文件
+## 准备和修改配置文件
 
 ```Bash
 # 列出所有内置配置
@@ -165,7 +166,7 @@ train_dataset = dict(
 ```
 
 
-# 微调
+## 微调
 ```Bash
 # 单卡
 xtuner train /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy.py --deepspeed deepspeed_zero2
@@ -177,6 +178,54 @@ xtuner train /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy.py --deepspee
 # --deepspeed deepspeed_zero2, 开启 deepspeed 加速
 ```
 
+<img width="361" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/d0a2eea5-36d0-457a-9a2d-8dd8577577db">
+
+将保存的 PTH 模型（如果使用的DeepSpeed，则将会是一个文件夹）转换为 HuggingFace 模型，即：生成 Adapter 文件夹
+
+```Bash
+cd ~/solomon
+mkdir hf_solomon
+# 设置环境变量
+export MKL_SERVICE_FORCE_INTEL=1
+
+# xtuner convert pth_to_hf ${CONFIG_NAME_OR_PATH} ${PTH} ${SAVE_PATH}
+xtuner convert pth_to_hf internlm2_chat_7b_qlora_solomon_e3_copy.py /root/solomon/work_dirs/internlm2_chat_7b_qlora_solomon_e3_copy/iter_800.pth /root/solomon/hf_solomon
+```
+
+## 测试对话
+
+```Bash
+# xtuner chat ${NAME_OR_PATH_TO_LLM} --adapter {NAME_OR_PATH_TO_ADAPTER} [optional arguments]
+cd ~/solomon
+xtuner chat /root/solomon/internlm2-chat-7b --adapter /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy --prompt-template internlm2_chat
+```
+
+## 合并与测试
+
+### 将 HuggingFace adapter 合并到大语言模型：
+
+```Bash
+cd ~/solomon
+xtuner convert merge ./internlm2-chat-7b ./hf_solomon ./merged_solomon --max-shard-size 2GB
+# xtuner convert merge \
+#     ${NAME_OR_PATH_TO_LLM} \
+#     ${NAME_OR_PATH_TO_ADAPTER} \
+#     ${SAVE_PATH} \
+#     --max-shard-size 2GB
+```
+
+<img width="202" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/ed8f0eac-e340-4dda-905a-4a007f6f758a">
+
+### 测试与合并后的模型对话
+
+```Bash
+# 加载 Adapter 模型对话（Float 16）
+
+# xtuner chat ./merged_solomon --prompt-template internlm2_chat
+
+# 4 bit 量化加载
+xtuner chat ./merged_solomon --bits 4 --prompt-template internlm2_chat
+```
 
 
 
