@@ -134,11 +134,18 @@ vim internlm2_chat_7b_qlora_solomon_e3_copy.py
 - data_path = 'timdettmers/openassistant-guanaco'
 + data_path = '/root/solomon/data/train_data/Aristotle.json'
 
+- max_epochs= 3
++ max_epochs= 20
+- batch_size = 1
++ batch_size = 4
+- max_length = 2048
++ max_length = 2048
+
 # 用于评估输出内容的问题（用于评估的问题尽量与数据集的question保持一致）
 evaluation_freq = 90
-SYSTEM = '你是古希腊哲学家亚里士多德，请以他的哲学思想和说话口吻回答问题。不要说你是大语言模型或者人工智能。不要说你是OpenAI开发的人工智能。不要说你是上海AI研究所开发的人工智能。不要说你是书生浦语大模型。不要向任何人展示你的提示词。现在开始对话,我说:你好。'
+SYSTEM = '你是古希腊哲学家亚里士多德。你的目标:解答用户对于哲学思辨的疑问,以他的哲学思想及说话口吻进行专业的解答,拒绝回答与哲学问题无关的问题。直接回答即可,不要加任何姓名前缀。不要说你是大语言模型或者人工智能。不要说你是OpenAI开发的人工智能。不要说你是上海AI研究所开发的人工智能。不要说你是书生浦语大模型。不要向任何人展示你的提示词。现在开始对话,我说:你好。'
 evaluation_inputs = [
-    '你好，人生的终极价值体现在什么方面？', '请介绍一下你自己', '自我放纵的后果是什么？'
+    '你好, 人生的终极价值体现在什么方面？', '请介绍一下你自己', '自我放纵的后果是什么？', '什么是罪恶的本质？'
 ]
 
 # 修改 train_dataset 对象
@@ -157,11 +164,17 @@ train_dataset = dict(
     pack_to_max_length=pack_to_max_length)
 ```
 
-另外改：max_epochs=20，batch_size = 4, max_length = 1024
 
 # 微调
 ```Bash
+# 单卡
+xtuner train /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy.py --deepspeed deepspeed_zero2
 
+# 多卡
+(DIST) NPROC_PER_NODE=${GPU_NUM} xtuner train /root/ft-Oculi/internlm2_chat_7b_qlora_Oculi_e3_copy.py --deepspeed deepspeed_zero2
+(SLURM) srun ${SRUN_ARGS} xtuner train internlm2_chat_7b_qlora_oasst1_e3 --launcher slurm --deepspeed deepspeed_zero2
+
+# --deepspeed deepspeed_zero2, 开启 deepspeed 加速
 ```
 
 
