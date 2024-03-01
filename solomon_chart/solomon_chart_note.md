@@ -227,5 +227,38 @@ xtuner convert merge ./internlm2-chat-7b ./hf_solomon ./merged_solomon --max-sha
 xtuner chat ./merged_solomon --bits 4 --prompt-template internlm2_chat
 ```
 
+<img width="637" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/5f09d75f-a3cb-4181-8205-0a814ca3df66">
+
+<img width="665" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/b3370a7e-6f82-47eb-b757-e8df5cff3ccc">
+
+
+# WEB_Demo
+
+```Bash
+# 创建code文件夹用于存放InternLM项目代码
+cd ~
+mkdir code && cd code
+git clone https://github.com/InternLM/InternLM.git
+
+cd ~/code/
+cp ~/code/InternLM/chat/web_demo.py web_solomon.py
+
+vim web_solomon.py
+# 修改将 code/web_solomon.py 中 183 行和 186 行的模型路径更换为Merge后存放参数的路径 /root/solomon/merged_solomon
++ model = (AutoModelForCausalLM.from_pretrained('/root/solomon/merged_solomon',
+                                                  trust_remote_code=True).to(
+                                                      torch.bfloat16).cuda())
++ tokenizer = AutoTokenizer.from_pretrained('/root/solomon/merged_solomon',
+                                              trust_remote_code=True)
+
+pip install streamlit
+
+streamlit run /root/code/web_solomon.py --server.address 127.0.0.1 --server.port 6006
+
+# 本地运行
+ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 33090(修改对应端口)
+浏览器访问：http://127.0.0.1:6006
+```
+
 
 
