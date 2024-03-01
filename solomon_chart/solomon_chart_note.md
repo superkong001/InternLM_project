@@ -240,8 +240,8 @@ cd ~
 mkdir code && cd code
 git clone https://github.com/InternLM/InternLM.git
 
-cd ~/code/
-cp ~/code/InternLM/chat/web_demo.py web_solomon.py
+cd ~/code
+cp ~/code/chat/web_demo.py web_solomon.py
 
 vim web_solomon.py
 # 修改将 code/web_solomon.py 中 183 行和 186 行的模型路径更换为Merge后存放参数的路径 /root/solomon/merged_solomon
@@ -250,15 +250,21 @@ vim web_solomon.py
                                                       torch.bfloat16).cuda())
 + tokenizer = AutoTokenizer.from_pretrained('/root/solomon/merged_solomon',
                                               trust_remote_code=True)
+# 修改239 行和 240 行
++  user_avator = '/root/code/InternLM/assets/user.png'
++  robot_avator = '/root/code/InternLM/assets/robot.png'
 
 pip install streamlit
 
 streamlit run /root/code/web_solomon.py --server.address 127.0.0.1 --server.port 6006
 
 # 本地运行
-ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 33090(修改对应端口)
+ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 37660(修改对应端口)
 浏览器访问：http://127.0.0.1:6006
 ```
+
+<img width="966" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/8a75f03b-74ce-44ea-bec4-78cfa79eb448">
+
 
 
 
