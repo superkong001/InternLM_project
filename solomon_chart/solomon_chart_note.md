@@ -141,8 +141,9 @@ vim internlm2_chat_7b_qlora_solomon_e3_copy.py
 - data_path = 'timdettmers/openassistant-guanaco'
 + data_path = '/root/solomon/data/train_data/Aristotle.json'
 
+# 原始400条数据，保证总训练数据在1万条以上，400*100=4万
 - max_epochs= 3
-+ max_epochs= 20
++ max_epochs= 100 
 - batch_size = 1
 + batch_size = 4
 - max_length = 2048
