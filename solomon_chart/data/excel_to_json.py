@@ -9,26 +9,22 @@ def excel_to_json(excel_filename):
     # 初始化最终的JSON结构
     final_json = []
     
-    # 遍历DataFrame的每一行，检查system列是否为空，并相应地添加到JSON结构中
+    # 遍历DataFrame的每一行，将其添加到最终的JSON结构中
     for index, row in df.iterrows():
-        # 检查system列是否为空
-        if pd.isnull(row[0]):
-            conversation_entry = {
-                "input": row[1],   # 第二列是input
-                "output": row[2]   # 第三列是output
-            }
-        else:
-            conversation_entry = {
-                "system": row[0],  # 第一列是system
-                "input": row[1],   # 第二列是input
-                "output": row[2]   # 第三列是output
-            }
+        # 检查system列是否为空，如果为空，则设置为空字符串
+        system_value = row[0] if pd.notnull(row[0]) else ""
         
         conversation_dict = {
-            "conversation": [conversation_entry]
+            "conversation": [
+                {
+                    "system": system_value,  # 使用处理后的system值
+                    "input": row[1],         # 第二列是input
+                    "output": row[2]         # 第三列是output
+                }
+            ]
         }
         final_json.append(conversation_dict)
-        
+    
     # 将JSON结构写入文件
     json_filename = excel_filename.rsplit('.', 1)[0] + '.json'  # 更改文件扩展名为.json
     with open(json_filename, 'w', encoding='utf-8') as json_file:
