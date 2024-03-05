@@ -37,20 +37,17 @@ ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 ```
 
 ## 准备Qlora数据集
-
 ```Bash
 mkdir ~/solomon/data/dataset && cd ~/solomon/data/train_data
-格式：第一列是system内容,第二列是input内容,第三列是output内容
+
+编写excel_to_json.py实现将excel文件转换为单轮对话的json格式
+excel格式：第一列是system内容,第二列是input内容,第三列是output内容
 Aristotle.xlsx
 Socrates.xlsx
 Plato.xlsx
-```
-
-编写excel_to_json.py实现将excel文件转换为单轮对话的json格式
 
 python excel_to_json.py Aristotle.xlsx
-
-
+```
 
 ```Bash
 # example
