@@ -276,6 +276,15 @@ ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 37660(修改对应�
 
 <img width="966" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/8a75f03b-74ce-44ea-bec4-78cfa79eb448">
 
+# 模型上传openxlab
 
+打开 InternLM2-chat-7b在openxlab上的模型链接，切换到 模型文件-> 点击查看元信息：
 
+> https://openxlab.org.cn/models/detail/OpenLMLab/internlm2-chat-7b
+
+<img width="783" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/40685221-71ed-498c-9c8c-e0ddc77cb1c3">
+
+cd ~/ft-Oculi/merged_Oculi
+
+新建metafile.yml, 将里面的内容复制到 metafile.yml文件中
 
