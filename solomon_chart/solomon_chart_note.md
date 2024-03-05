@@ -40,12 +40,16 @@ ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 
 ```Bash
 mkdir ~/solomon/data/dataset && cd ~/solomon/data/train_data
-Aristotle.json
-Socrates.json
-Plato.json
+格式：第一列是system内容,第二列是input内容,第三列是output内容
+Aristotle.xlsx
+Socrates.xlsx
+Plato.xlsx
 ```
 
 编写excel_to_json.py实现将excel文件转换为单轮对话的json格式
+
+python excel_to_json.py Aristotle.xlsx
+
 ```Bash
 import pandas as pd
 import json
@@ -58,19 +62,26 @@ def excel_to_json(excel_filename):
     # 初始化最终的JSON结构
     final_json = []
     
-    # 遍历DataFrame的每一行，将其添加到最终的JSON结构中
+    # 遍历DataFrame的每一行，检查system列是否为空，并相应地添加到JSON结构中
     for index, row in df.iterrows():
+        # 检查system列是否为空
+        if pd.isnull(row[0]):
+            conversation_entry = {
+                "input": row[1],   # 第二列是input
+                "output": row[2]   # 第三列是output
+            }
+        else:
+            conversation_entry = {
+                "system": row[0],  # 第一列是system
+                "input": row[1],   # 第二列是input
+                "output": row[2]   # 第三列是output
+            }
+        
         conversation_dict = {
-            "conversation": [
-                {
-                    "system": row[0],  # 第一列是system
-                    "input": row[1],   # 第二列是input
-                    "output": row[2]   # 第三列是output
-                }
-            ]
+            "conversation": [conversation_entry]
         }
         final_json.append(conversation_dict)
-    
+        
     # 将JSON结构写入文件
     json_filename = excel_filename.rsplit('.', 1)[0] + '.json'  # 更改文件扩展名为.json
     with open(json_filename, 'w', encoding='utf-8') as json_file:
@@ -84,6 +95,7 @@ if __name__ == '__main__':
     else:
         excel_filename = sys.argv[1]
         excel_to_json(excel_filename)
+
 ```
 
 ```Bash
@@ -212,6 +224,7 @@ train_dataset = dict(
 ## 微调
 ```Bash
 # 单卡
+cd ~/solomon/
 xtuner train /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy.py --deepspeed deepspeed_zero2
 
 # 多卡
