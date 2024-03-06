@@ -141,7 +141,7 @@ vim internlm2_chat_7b_qlora_solomon_e3_copy.py
 
 # 修改训练数据为 MedQA2019-structured-train.jsonl 路径
 - data_path = 'timdettmers/openassistant-guanaco'
-+ data_path = '/root/solomon/data/train_data/Aristotle.json'
++ data_path = '/root/solomon/data/train_data/Aristotle_doc_all.json'
 
 # 原始2400条数据，保证总训练数据在2万条以上，2400*10=2.4万
 - max_epochs= 3
