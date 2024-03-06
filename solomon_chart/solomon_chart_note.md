@@ -41,7 +41,7 @@ ln -s /root/model/Shanghai_AI_Laboratory/internlm2-chat-7b ~/solomon/
 mkdir ~/solomon/data/dataset && cd ~/solomon/data/train_data
 
 编写excel_to_json.py实现将excel文件转换为单轮对话的json格式
-编写process_txt_to_json.py实现将目录下的txt转换为单轮对话的json格式
+编写process_txt_to_json.py实现将目录下的txt转换为单轮对话的json格式(txt文档是亚里士多德写的哲学著作:))
 excel格式：第一列是system内容,第二列是input内容,第三列是output内容
 Aristotle.xlsx
 Socrates.xlsx
