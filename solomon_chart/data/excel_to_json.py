@@ -13,12 +13,15 @@ def excel_to_json(excel_filename):
     for index, row in df.iterrows():
         # 检查system列是否为空，如果为空，则设置为空字符串
         system_value = row[0] if pd.notnull(row[0]) else ""
+
+        # 检查input列是否为空，如果为空，则设置为空字符串
+        input_value = row[1] if pd.notnull(row[1]) else ""
         
         conversation_dict = {
             "conversation": [
                 {
                     "system": system_value,  # 使用处理后的system值
-                    "input": row[1],         # 第二列是input
+                    "input": input_value,         # 第二列是input
                     "output": row[2]         # 第三列是output
                 }
             ]
