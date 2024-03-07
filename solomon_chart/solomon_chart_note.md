@@ -460,6 +460,42 @@ upload(model_repo='superkong001/solomon_chart', file_type='metafile',source="upl
 
 <img width="656" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/4d0b358b-4094-4bd3-b8b3-09984c1e1501">
 
+下载web_solomon.py，并修改保存为solomon_Webchart.py：
+
+```Bash
++ from modelscope import snapshot_download
+
+# 定义模型路径
++ model_id = 'telos/solomon_chart'
++ mode_name_or_path = snapshot_download(model_id, revision='master')
+
+# 修改load_model
+def load_model():
+    model = (AutoModelForCausalLM.from_pretrained('/root/solomon/merged_solomon_1000',
+                                                  trust_remote_code=True).to(
+                                                      torch.bfloat16).cuda())
+    tokenizer = AutoTokenizer.from_pretrained('/root/solomon/merged_solomon_1000',
+                                              trust_remote_code=True)
+    return model, tokenizer
+
+# 改为：
+def load_model():
+    # 从预训练的模型中获取模型，并设置模型参数
+    model = (AutoModelForCausalLM.from_pretrained(mode_name_or_path,
+                                                  trust_remote_code=True).to(
+                                                      torch.bfloat16).cuda())
+    # 从预训练的模型中获取tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(mode_name_or_path,
+                                              trust_remote_code=True)
+    model.eval()  
+    return model, tokenizer
+
+# 修改main函数
++ user_avator = mode_name_or_path + '/user.png'
++ robot_avator = mode_name_or_path + '/Aristotle.png'
++ st.title('InternLM2-Chat-7B 亚里士多德')
+```
+
 ## openxlab部署
 
 创建 app.py 添加至代码仓库
@@ -468,7 +504,7 @@ upload(model_repo='superkong001/solomon_chart', file_type='metafile',source="upl
 import os
 
 if __name__ == '__main__':
-    os.system('streamlit run react_solomon_Webchart.py --server.address 0.0.0.0 --server.port 7860 --server.enableStaticServing True')
+    os.system('streamlit run solomon_Webchart.py --server.address 0.0.0.0 --server.port 7860 --server.enableStaticServing True')
 ```
 
 创建requirements.txt
