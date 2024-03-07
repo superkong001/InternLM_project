@@ -512,16 +512,12 @@ if __name__ == '__main__':
 ```Bash
 os
 pandas
-python-docx
 torch
 torchvision
 modelscope
 transformers
 xtuner
-lmdeploy
 streamlit
-lagent
-onnxruntime-gpu
 openxlab
 ```
 
