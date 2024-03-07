@@ -1,0 +1,9 @@
+os
+pandas
+torch
+torchvision
+modelscope
+transformers
+xtuner
+streamlit
+openxlab
