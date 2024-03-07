@@ -1,4 +1,4 @@
-# QLora微调
+<img width="496" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/d6a0bef8-6544-4987-8d64-3ad77fcb82bc"># QLora微调
 
 ## 环境部署
 
@@ -287,7 +287,7 @@ vim web_solomon.py
 + meta_instruction = ('你是古希腊哲学家亚里士多德，请以他的哲学思想和口吻回答问题。')
 # 修改239 行和 240 行
 + user_avator = '/root/code/InternLM/assets/user.png'
-+ robot_avator = '/root/code/InternLM/assets/robot.png'
++ robot_avator = '/root/code/data/Aristotle.png'
 + st.title('与古希腊哲学家思辨')
 
 pip install streamlit
@@ -303,13 +303,159 @@ ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 37660(修改对应�
 
 # 模型上传openxlab
 
+## 模型上传准备工作
+
 打开 InternLM2-chat-7b在openxlab上的模型链接，切换到 模型文件-> 点击查看元信息：
 
 > https://openxlab.org.cn/models/detail/OpenLMLab/internlm2-chat-7b
 
 <img width="783" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/40685221-71ed-498c-9c8c-e0ddc77cb1c3">
 
-cd ~/ft-Oculi/merged_Oculi
+cd ~/solomon/merged_solomon_1000
 
 新建metafile.yml, 将里面的内容复制到 metafile.yml文件中
+
+```Bash
+Collections:
+- Name: "与古希腊哲学家思辨"
+  License: "Apache-2.0"
+  Framework: "[]"
+  Paper: {}
+  Code:
+    URL: "https://github.com/superkong001/InternLM_project/solomon_chart"
+Models:
+- Name: "config.json"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "configuration_internlm2.py"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "generation_config.json"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "modeling_internlm2.py"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00001-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00002-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00003-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00004-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00005-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00006-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00007-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model-00008-of-00008.bin"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "special_tokens_map.json"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "tokenization_internlm2.py"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "tokenizer_config.json"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "tokenizer.model"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+- Name: "pytorch_model.bin.index.json"
+  Results:
+  - Task: "Text Generation"
+    Dataset: "none"
+```
+
+pip install ruamel.yaml
+
+编辑 convert.py
+
+```Bash
+import sys
+import ruamel.yaml
+
+yaml = ruamel.yaml.YAML()
+yaml.preserve_quotes = True
+yaml.default_flow_style = False
+file_path = 'metafile.yml'
+# 读取YAML文件内容
+with open(file_path, 'r') as file:
+ data = yaml.load(file)
+# 遍历模型列表
+for model in data.get('Models', []):
+ # 为每个模型添加Weights键值对，确保名称被正确引用
+ model['Weights'] = model['Name']
+
+# 将修改后的数据写回文件
+with open(file_path, 'w') as file:
+ yaml.dump(data, file)
+
+print("Modifications saved to the file.")
+```
+
+生成好带weight的文件：
+
+python convert.py metafile.yml
+
+<img width="496" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/b7583325-4016-4f86-a078-930ae4051ca3">
+
+打开 openxlab右上角 账号与安全--》密钥管理:
+
+<img width="857" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/a8d92d0a-0be5-439d-bb78-164ca98aadf2">
+
+将AK,SK复制下来。
+
+配置登录信息：
+
+```Bash
+pip install openxlab
+python
+import openxlab
+openxlab.login(ak='xxx',sk='yyyy')
+```
+
+创建并上传模型：
+
+openxlab model create --model-repo='superkong001/InternLM_project/solomon_chart' -s ./metafile.yml
+
+Tips：漏改的话继续上传，新建并编辑一个upload1.yml
+
+```Bash
+python
+from openxlab.model import upload 
+upload(model_repo='superkong001/InternLM_project/solomon_chart', file_type='metafile',source="upload1.yml")
+```
+
+## 开展模型上传modelscope
+
+在modelscope创建模型：
+
 
