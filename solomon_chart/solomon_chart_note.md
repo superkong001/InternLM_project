@@ -301,7 +301,7 @@ ssh -CNg -L 6006:127.0.0.1:6006 root@ssh.intern-ai.org.cn -p 37660(修改对应�
 
 <img width="829" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/4b8f2d71-7f11-4d39-a3a5-55de40846828">
 
-# 模型上传openxlab
+# 模型上传和部署openxlab
 
 ## 模型上传准备工作
 
@@ -458,9 +458,54 @@ upload(model_repo='superkong001/solomon_chart', file_type='metafile',source="upl
 
 上传后的模型：
 
+<img width="656" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/4d0b358b-4094-4bd3-b8b3-09984c1e1501">
 
 ## openxlab部署
 
+创建 app.py 添加至代码仓库
 
+```Bash
+import os
 
+if __name__ == '__main__':
+    os.system('streamlit run react_solomon_Webchart.py --server.address 0.0.0.0 --server.port 7860 --server.enableStaticServing True')
+```
 
+创建requirements.txt
+
+```Bash
+os
+pandas
+python-docx
+torch
+torchvision
+modelscope
+transformers
+xtuner
+lmdeploy
+streamlit
+lagent
+onnxruntime-gpu
+openxlab
+```
+
+# 模型上传modelscope
+
+```Bash
+mkdir ~/modelscope
+cd ~/modelscope
+apt-get install git-lfs
+git clone https://www.modelscope.cn/teloskong/solomon_chart.git
+
+# 将 /root/solomon/merged_solomon_1000 模型文件覆盖 ~/modelscope/solomon_chart 下的文件
+cd solomon_chart/
+cp -r /root/solomon/merged_solomon_1000/* .
+cp /root/solomon/merged_Oculi/README.md .
+```
+
+```Bash
+git add *
+git config --global user.name "teloskong"
+git commit -m "Oculi-InternLM2 Model V20240204"
+git push # 输入用户名和密码
+```
