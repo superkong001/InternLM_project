@@ -444,18 +444,23 @@ openxlab.login(ak='xxx',sk='yyyy')
 
 创建并上传模型：
 
-openxlab model create --model-repo='superkong001/InternLM_project/solomon_chart' -s ./metafile.yml
+openxlab model create --model-repo='superkong001/solomon_chart' -s ./metafile.yml
 
 Tips：漏改的话继续上传，新建并编辑一个upload1.yml
 
 ```Bash
 python
 from openxlab.model import upload 
-upload(model_repo='superkong001/InternLM_project/solomon_chart', file_type='metafile',source="upload1.yml")
+upload(model_repo='superkong001/solomon_chart', file_type='metafile',source="upload1.yml")
 ```
 
-## 开展模型上传modelscope
+<img width="812" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/f173bd93-4ea7-4648-ab9e-9053a18b51f4">
 
-在modelscope创建模型：
+上传后的模型：
+
+
+## openxlab部署
+
+
 
 
