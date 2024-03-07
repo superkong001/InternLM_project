@@ -1,4 +1,4 @@
-<img width="496" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/d6a0bef8-6544-4987-8d64-3ad77fcb82bc"># QLora微调
+# QLora微调
 
 ## 环境部署
 
