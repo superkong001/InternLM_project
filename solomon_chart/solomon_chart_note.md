@@ -193,7 +193,7 @@ xtuner train /root/solomon/internlm2_chat_7b_qlora_solomon_e3_copy.py --deepspee
 # --deepspeed deepspeed_zero2, 开启 deepspeed 加速
 ```
 
-<img width="361" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/d0a2eea5-36d0-457a-9a2d-8dd8577577db">
+<img width="283" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/08f70245-d944-4c14-b5f9-672be8578dcb">
 
 将保存的 PTH 模型（如果使用的DeepSpeed，则将会是一个文件夹）转换为 HuggingFace 模型，即：生成 Adapter 文件夹
 
@@ -204,7 +204,7 @@ mkdir hf_solomon
 export MKL_SERVICE_FORCE_INTEL=1
 
 # xtuner convert pth_to_hf ${CONFIG_NAME_OR_PATH} ${PTH} ${SAVE_PATH}
-xtuner convert pth_to_hf internlm2_chat_7b_qlora_solomon_e3_copy.py /root/solomon/work_dirs/internlm2_chat_7b_qlora_solomon_e3_copy/iter_800.pth /root/solomon/hf_solomon
+xtuner convert pth_to_hf internlm2_chat_7b_qlora_solomon_e3_copy.py /root/solomon/work_dirs/internlm2_chat_7b_qlora_solomon_e3_copy/iter_1670.pth /root/solomon/hf_solomon
 ```
 
 ## 测试对话,分别测试哪个批次没有过拟合，效果较好
@@ -216,7 +216,19 @@ cd ~/solomon
 xtuner chat /root/solomon/internlm2-chat-7b --adapter /root/solomon/hf_solomon --prompt-template internlm2_chat
 ```
 
-<img width="642" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/2db708f2-8d16-4444-85a1-e4fcc3f8e406">
+使用iter_500.pth的结果：
+
+<img width="790" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/84b90760-c571-4e19-95f6-be762e308a0e">
+
+使用iter_1000.pth的结果：
+
+<img width="708" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/9b7ad39f-2903-47bd-a06d-ee69170c50c4">
+
+使用iter_1670.pth的结果：
+
+<img width="634" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/9125d652-218f-41f2-ae81-13ed31c76376">
+
+结论：1670过拟合了，自己给起了一个名字，500没有效果，最好的是1000的，后面有时间调小一下save_steps
 
 ## 合并与测试
 
@@ -224,7 +236,7 @@ xtuner chat /root/solomon/internlm2-chat-7b --adapter /root/solomon/hf_solomon -
 
 ```Bash
 cd ~/solomon
-xtuner convert merge ./internlm2-chat-7b ./hf_solomon ./merged_solomon --max-shard-size 2GB
+xtuner convert merge ./internlm2-chat-7b ./hf_solomon_1000 ./merged_solomon_1000 --max-shard-size 2GB
 # xtuner convert merge \
 #     ${NAME_OR_PATH_TO_LLM} \
 #     ${NAME_OR_PATH_TO_ADAPTER} \
