@@ -510,7 +510,6 @@ if __name__ == '__main__':
 创建requirements.txt
 
 ```Bash
-os
 pandas
 torch
 torchvision
@@ -520,6 +519,9 @@ xtuner
 streamlit
 openxlab
 ```
+
+<img width="860" alt="image" src="https://github.com/superkong001/InternLM_project/assets/37318654/9b03207c-348a-40ef-a49d-3247106c4048">
+
 
 # 模型上传modelscope
 
